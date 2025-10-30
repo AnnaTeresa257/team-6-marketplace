@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    /* Basic Settings */
+    "target": "ESNext",                      // Compile to modern JavaScript
+    "module": "ESNext",                      // Use ES modules
+    "moduleResolution": "Node",              // Match Node.js resolution
+    "jsx": "react-jsx",                      // ✅ Enables JSX support (React 17+)
+
+    /* JS/TS Interoperability */
+    "allowJs": true,                         // ✅ Allow .js and .jsx files
+    "checkJs": false,                        // ✅ Don’t type-check .js files
+    "esModuleInterop": true,                 // Import/export compatibility
+    "allowSyntheticDefaultImports": true,    // Allow default imports for modules without one
+
+    /* TypeScript Strictness */
+    "strict": true,                          // Optional — enables all strict type-checks for .ts/.tsx
+    "skipLibCheck": true,                    // Don’t check library .d.ts files for speed
+    "forceConsistentCasingInFileNames": true,
+
+    /* Output */
+    "isolatedModules": true,                 // Helps with React tools (like Vite)
+    "noEmit": true,                          // Don’t output JS (let bundler handle it)
+
+    /* Paths (optional if using aliases) */
+    "baseUrl": ".",                          
+    "paths": {
+      "@/*": ["src/*"]                       // Example alias: import from "@/components"
+    }
+  },
+
+  "include": ["src"],                        // ✅ Adjust to your source folder
+  "exclude": ["node_modules", "dist"]
+}
