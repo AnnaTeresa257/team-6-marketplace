@@ -4,35 +4,66 @@ import { toast } from 'sonner';
 interface LoginPageProps {
   onLogin: (email: string) => void;
   onNavigateToRegister: () => void;
+  apiUrl: string;
 }
 
-export function LoginPage({ onLogin, onNavigateToRegister }: LoginPageProps) {
+export function LoginPage({
+  onLogin,
+  onNavigateToRegister,
+  apiUrl,
+}: LoginPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error('Please fill in all fields');
       return;
     }
-
-    // Basic email validation
     if (!email.endsWith('@ufl.edu')) {
       toast.error('Please use a valid UF email address');
       return;
     }
 
     setIsLoading(true);
-    
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
+
+    try {
+      // 1. Prepare form data for OAuth2
+      const formData = new URLSearchParams();
+      // Your backend login expects a 'username', so we pass the email as the username
+      formData.append('username', email);
+      formData.append('password', password);
+
+      // 2. Make the actual API call
+      const response = await fetch(`${apiUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Login failed');
+      }
+
+      // 3. Success! Get token and save it to localStorage
+      const data = await response.json();
+      localStorage.setItem('gator_token', data.access_token);
+
       toast.success('Login successful!');
-      onLogin(email);
-    }, 1000);
+      onLogin(email); // Tell App.tsx to change the page
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'An error occurred during login'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -40,20 +71,39 @@ export function LoginPage({ onLogin, onNavigateToRegister }: LoginPageProps) {
   };
 
   return (
-    <div className="bg-white relative size-full min-h-screen" data-name="High-Fi login">
+    <div
+      className="bg-white relative size-full min-h-screen"
+      data-name="High-Fi login"
+    >
       {/* Blue left panel */}
       <div className="absolute bg-[#00306e] h-full left-0 top-0 w-[752px] max-md:hidden" />
-      
+
       {/* White tilted rectangle on left side */}
-      <div className="absolute flex h-[calc(1px*((var(--transform-inner-width)*0.006124263629317284)+(var(--transform-inner-height)*0.9999844431877136)))] items-center justify-center left-[188.33px] top-[179.78px] w-[calc(1px*((var(--transform-inner-height)*0.0055775828659534454)+(var(--transform-inner-width)*0.9999812245368958)))] max-md:hidden" style={{ "--transform-inner-width": "370.28125", "--transform-inner-height": "686.890625" } as React.CSSProperties}>
+      <div
+        className="absolute flex h-[calc(1px*((var(--transform-inner-width)*0.006124263629317284)+(var(--transform-inner-height)*0.9999844431877136)))] items-center justify-center left-[188.33px] top-[179.78px] w-[calc(1px*((var(--transform-inner-height)*0.0055775828659534454)+(var(--transform-inner-width)*0.9999812245368958)))] max-md:hidden"
+        style={
+          {
+            '--transform-inner-width': '370.28125',
+            '--transform-inner-height': '686.890625',
+          } as React.CSSProperties
+        }
+      >
         <div className="flex-none rotate-[359.649deg] skew-x-[359.969deg]">
-          <div className="bg-white h-[686.897px] w-[370.295px]" data-name="Rectangle" />
+          <div
+            className="bg-white h-[686.897px] w-[370.295px]"
+            data-name="Rectangle"
+          />
         </div>
       </div>
 
       {/* Orange circle on left side */}
       <div className="absolute left-[311px] size-[128px] top-[291px] max-md:hidden">
-        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 128 128">
+        <svg
+          className="block size-full"
+          fill="none"
+          preserveAspectRatio="none"
+          viewBox="0 0 128 128"
+        >
           <circle cx="64" cy="64" fill="#FFB362" r="64" />
         </svg>
       </div>
@@ -91,8 +141,14 @@ export function LoginPage({ onLogin, onNavigateToRegister }: LoginPageProps) {
             <div className="relative">
               <div className="flex items-center justify-center">
                 <div className="flex-none rotate-[359.649deg] skew-x-[359.969deg] w-full">
-                  <div className="bg-white h-[84.491px] relative w-full" data-name="Rectangle">
-                    <div aria-hidden="true" className="absolute border-2 border-[#00306e] border-solid inset-0 pointer-events-none" />
+                  <div
+                    className="bg-white h-[84.491px] relative w-full"
+                    data-name="Rectangle"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="absolute border-2 border-[#00306e] border-solid inset-0 pointer-events-none"
+                    />
                     <input
                       type="email"
                       value={email}
@@ -115,8 +171,14 @@ export function LoginPage({ onLogin, onNavigateToRegister }: LoginPageProps) {
             <div className="relative">
               <div className="flex items-center justify-center">
                 <div className="flex-none rotate-[359.649deg] skew-x-[359.969deg] w-full">
-                  <div className="bg-white h-[84.491px] relative w-full" data-name="Rectangle">
-                    <div aria-hidden="true" className="absolute border-2 border-[#00306e] border-solid inset-0 pointer-events-none" />
+                  <div
+                    className="bg-white h-[84.491px] relative w-full"
+                    data-name="Rectangle"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="absolute border-2 border-[#00306e] border-solid inset-0 pointer-events-none"
+                    />
                     <input
                       type="password"
                       value={password}
@@ -170,3 +232,4 @@ export function LoginPage({ onLogin, onNavigateToRegister }: LoginPageProps) {
     </div>
   );
 }
+

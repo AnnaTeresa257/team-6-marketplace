@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlmodel import Session, select
+from sqlmodel import Session, select, or_
 from datetime import timedelta
 
-from ..models import User, UserCreate, UserPublic, Token
-from ..database import get_session
-from ..security import (
+from backend.models import User, UserCreate, UserPublic, Token
+from backend.database import get_session
+from backend.security import (
     verify_password,
     get_password_hash,
     create_access_token,
@@ -28,6 +28,11 @@ def signup(user_data: UserCreate, session: Session = Depends(get_session)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username or email already registered"
         )
+
+    # --- ADD THIS DEBUG LINE ---
+    print(f"DEBUG: Attempting to hash: {user_data.password}")
+    print(f"DEBUG: Length is: {len(user_data.password.encode('utf-8'))} bytes")
+    # ---------------------------
 
     # User does not already exist, so hash their password and add the user's data into the database
     hashed_pwd = get_password_hash(user_data.password)
@@ -52,7 +57,7 @@ def login(
         session: Session = Depends(get_session)
 ):
     user = session.exec(
-        select(User).where(User.username == form_data.username)
+        select(User).where(or_(User.username == form_data.username, User.email == form_data.username))
     ).first()  # Queries the database for the user with the given username
 
     if not user or not verify_password(form_data.password, user.hashed_password):

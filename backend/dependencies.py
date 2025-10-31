@@ -5,15 +5,15 @@ from jwt.exceptions import InvalidTokenError
 from sqlmodel import Session, select
 import jwt
 
-from database import get_session
-from models import User
-from security import SECRET_KEY, ALGORITHM
+from backend.database import get_session
+from backend.models import User
+from backend.security import SECRET_KEY, ALGORITHM
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")  # Tells FastAPI that the frontend website can get a token by sending a POST request to /login
 
 async def get_current_user(
         token: Annotated[str, Depends(oauth2_scheme)],
-        session: Session = Depends(get_session())
+        session: Session = Depends(get_session)
 ) -> User:
 
     credentials_exception = HTTPException(
