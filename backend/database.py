@@ -9,7 +9,7 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 if not DATABASE_URL:  # Sanity check to ensure DB URL was found
     raise ValueError("DATABASE_URL was not found, verify .env file.")
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL)  # Add second parameter "echo=True" to get debug info printed out
 
 def initialize_db():
     SQLModel.metadata.create_all(engine)  # Creates tables in the database based on "table=True" flag
