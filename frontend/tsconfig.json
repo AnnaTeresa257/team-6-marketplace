@@ -17,6 +17,7 @@
     "strict": true,                          // Optional — enables all strict type-checks for .ts/.tsx
     "skipLibCheck": true,                    // Don’t check library .d.ts files for speed
     "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
 
     /* Output */
     "isolatedModules": true,                 // Helps with React tools (like Vite)
