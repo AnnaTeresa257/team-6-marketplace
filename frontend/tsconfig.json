@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "jsx": "react",
     /* Basic Settings */
     "target": "ESNext",                      // Compile to modern JavaScript
     "module": "ESNext",                      // Use ES modules
@@ -15,9 +14,10 @@
 
     /* TypeScript Strictness */
     "strict": true,                          // Optional — enables all strict type-checks for .ts/.tsx
-    "skipLibCheck": true,                    // Don’t check library .d.ts files for speed
+    "skipLibCheck": true,                    // Don't check library .d.ts files for speed
     "forceConsistentCasingInFileNames": true,
     "allowImportingTsExtensions": true,
+    "types": [],                             // Don't auto-include type definitions
 
     /* Output */
     "isolatedModules": true,                 // Helps with React tools (like Vite)

@@ -2,17 +2,20 @@
 
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+import { mockApi } from '../mockApi';
 
 type RegisterPageProps = {
   onRegister: () => void;
   onNavigateToLogin: () => void;
   apiUrl: string;
+  mockMode?: boolean;
 };
 
 export function RegisterPage({
   onRegister,
   onNavigateToLogin,
   apiUrl,
+  mockMode = false,
 }: RegisterPageProps) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -30,34 +33,46 @@ export function RegisterPage({
     setIsLoading(true);
 
     try {
-      // 1. Make API call with JSON body
-      const response = await fetch(`${apiUrl}/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: fullName, // Use fullName as the username
-          email: email,
-          password: password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        // Handle validation errors from Pydantic
-        if (response.status === 422 && errorData.detail) {
-          const messages = errorData.detail
-            .map((err: any) => err.msg)
-            .join('. ');
-          throw new Error(messages);
+      if (mockMode) {
+        // Use mock API
+        const result = await mockApi.signup(fullName, email, password);
+        if (result.success) {
+          toast.success('Account created successfully! Logging you in...');
+          onRegister();
+        } else {
+          throw new Error(result.error || 'Registration failed');
         }
-        throw new Error(errorData.detail || 'Registration failed');
-      }
+      } else {
+        // Use real API
+        // 1. Make API call with JSON body
+        const response = await fetch(`${apiUrl}/signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: fullName, // Use fullName as the username
+            email: email,
+            password: password,
+          }),
+        });
 
-      // 2. Success!
-      toast.success('Account created successfully! Please log in.');
-      onRegister(); // Tell App.tsx to navigate to login
+        if (!response.ok) {
+          const errorData = await response.json();
+          // Handle validation errors from Pydantic
+          if (response.status === 422 && errorData.detail) {
+            const messages = errorData.detail
+              .map((err: any) => err.msg)
+              .join('. ');
+            throw new Error(messages);
+          }
+          throw new Error(errorData.detail || 'Registration failed');
+        }
+
+        // 2. Success!
+        toast.success('Account created successfully! Please log in.');
+        onRegister(); // Tell App.tsx to navigate to login
+      }
     } catch (error) {
       toast.error(
         error instanceof Error
