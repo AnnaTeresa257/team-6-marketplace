@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { mockApi } from '../mockApi';
 
 interface LoginPageProps {
   onLogin: (email: string) => void;
   onNavigateToRegister: () => void;
   apiUrl: string;
+  mockMode?: boolean;
 }
 
 export function LoginPage({
   onLogin,
   onNavigateToRegister,
   apiUrl,
+  mockMode = false,
 }: LoginPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,32 +34,44 @@ export function LoginPage({
     setIsLoading(true);
 
     try {
-      // 1. Prepare form data for OAuth2
-      const formData = new URLSearchParams();
-      // Your backend login expects a 'username', so we pass the email as the username
-      formData.append('username', email);
-      formData.append('password', password);
+      if (mockMode) {
+        // Use mock API
+        const result = await mockApi.login(email, password);
+        if (result.success) {
+          toast.success('Login successful!');
+          onLogin(email);
+        } else {
+          throw new Error(result.error || 'Login failed');
+        }
+      } else {
+        // Use real API
+        // 1. Prepare form data for OAuth2
+        const formData = new URLSearchParams();
+        // Your backend login expects a 'username', so we pass the email as the username
+        formData.append('username', email);
+        formData.append('password', password);
 
-      // 2. Make the actual API call
-      const response = await fetch(`${apiUrl}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData,
-      });
+        // 2. Make the actual API call
+        const response = await fetch(`${apiUrl}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData,
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Login failed');
+        }
+
+        // 3. Success! Get token and save it to localStorage
+        const data = await response.json();
+        localStorage.setItem('gator_token', data.access_token);
+
+        toast.success('Login successful!');
+        onLogin(email); // Tell App.tsx to change the page
       }
-
-      // 3. Success! Get token and save it to localStorage
-      const data = await response.json();
-      localStorage.setItem('gator_token', data.access_token);
-
-      toast.success('Login successful!');
-      onLogin(email); // Tell App.tsx to change the page
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'An error occurred during login'
