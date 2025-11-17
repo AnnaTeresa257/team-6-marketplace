@@ -1,64 +1,29 @@
-import { useState, useEffect, useCallback } from 'react';
-// Add .tsx extension to help the build system resolve the files
-import { LoginPage } from './components/LoginPage.tsx';
-import { RegisterPage } from './components/RegisterPage.tsx';
-import { Dashboard } from './components/Dashboard.tsx';
+import { useState } from 'react';
+import { LoginPage } from './components/LoginPage';
+import { RegisterPage } from './components/RegisterPage';
+import { Dashboard } from './components/Dashboard';
+import { ProfilePage } from './components/ProfilePage';
 
-type Page = 'login' | 'register' | 'dashboard';
+type Page = 'login' | 'register' | 'dashboard' | 'profile';
 
-// This is the base URL of your FastAPI backend
-const API_URL = 'http://127.0.0.1:8000';
+//  MOCK MODE: Set to false when backend is running
+const MOCK_MODE = true;
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('login');
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
+  const apiUrl = 'http://localhost:8000';
 
-  // This function checks if a token is valid
-  const validateToken = useCallback(async (token: string) => {
-    try {
-      const response = await fetch(`${API_URL}/secure-data`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Token is invalid');
-      }
-      const user = await response.json();
-      // Set the user's email from the token/secure data
-      setLoggedInUser(user.email);
-      setCurrentPage('dashboard');
-    } catch (error) {
-      // If token is invalid, remove it and stay on login page
-      localStorage.removeItem('gator_token');
-      setLoggedInUser(null);
-      setCurrentPage('login');
-    }
-  }, []);
-
-  // On initial app load, check for an existing token
-  useEffect(() => {
-    const token = localStorage.getItem('gator_token');
-    if (token) {
-      validateToken(token);
-    }
-  }, [validateToken]);
-
-  // This is called by LoginPage on successful login
   const handleLogin = (email: string) => {
     setLoggedInUser(email);
     setCurrentPage('dashboard');
   };
 
-  // This is called by RegisterPage on successful registration
   const handleRegister = () => {
-    // After registering, send user to login
-    setCurrentPage('login');
+    setCurrentPage('dashboard');
   };
 
-  // This is called by Dashboard to log out
   const handleLogout = () => {
-    localStorage.removeItem('gator_token'); // Clear the token
     setLoggedInUser(null);
     setCurrentPage('login');
   };
@@ -71,30 +36,46 @@ export default function App() {
     setCurrentPage('login');
   };
 
+  const navigateToProfile = () => {
+    setCurrentPage('profile');
+  };
+
+  const navigateToDashboard = () => {
+    setCurrentPage('dashboard');
+  };
+
   return (
     <>
       {currentPage === 'login' && (
-        <LoginPage
-          onLogin={handleLogin}
+        <LoginPage 
+          onLogin={handleLogin} 
           onNavigateToRegister={navigateToRegister}
-          apiUrl={API_URL}
+          apiUrl={apiUrl}
+          mockMode={MOCK_MODE}
         />
       )}
       {currentPage === 'register' && (
-        <RegisterPage
+        <RegisterPage 
           onRegister={handleRegister}
           onNavigateToLogin={navigateToLogin}
-          apiUrl={API_URL}
+          apiUrl={apiUrl}
+          mockMode={MOCK_MODE}
         />
       )}
       {currentPage === 'dashboard' && loggedInUser && (
-        <Dashboard
+        <Dashboard 
           userEmail={loggedInUser}
           onLogout={handleLogout}
-          apiUrl={API_URL}
+          onNavigateToProfile={navigateToProfile}
+        />
+      )}
+      {currentPage === 'profile' && loggedInUser && (
+        <ProfilePage
+          userEmail={loggedInUser}
+          onNavigateToDashboard={navigateToDashboard}
+          onLogout={handleLogout}
         />
       )}
     </>
   );
 }
-
