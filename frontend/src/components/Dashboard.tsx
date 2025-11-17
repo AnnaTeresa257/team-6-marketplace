@@ -20,6 +20,7 @@ interface Listing {
 export function Dashboard({ userEmail, onLogout, onNavigateToProfile }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'browse' | 'myListings' | 'profile'>('browse');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high' | 'category'>('name');
 
   const mockListings: Listing[] = [
     { id: 1, title: 'Calculus Textbook', price: 45, seller: 'student1@ufl.edu', category: 'Textbooks', image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400' },
@@ -39,6 +40,24 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile }: Dashboar
     listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     listing.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const sortListings = (listings: Listing[]) => {
+    const sorted = [...listings];
+    switch (sortBy) {
+      case 'name':
+        return sorted.sort((a, b) => a.title.localeCompare(b.title));
+      case 'price-low':
+        return sorted.sort((a, b) => a.price - b.price);
+      case 'price-high':
+        return sorted.sort((a, b) => b.price - a.price);
+      case 'category':
+        return sorted.sort((a, b) => a.category.localeCompare(b.category));
+      default:
+        return sorted;
+    }
+  };
+
+  const sortedListings = sortListings(filteredListings);
 
   const handleAddListing = () => {
     toast.info('Add listing feature would open a form');
@@ -127,6 +146,16 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile }: Dashboar
                   className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#00306e] font-['Alumni_Sans:Regular',_sans-serif] text-[20px]"
                 />
               </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#00306e] font-['Alumni_Sans:Regular',_sans-serif] text-[20px] bg-white cursor-pointer"
+              >
+                <option value="name">Sort by: Item Name</option>
+                <option value="price-low">Sort by: Price (Low to High)</option>
+                <option value="price-high">Sort by: Price (High to Low)</option>
+                <option value="category">Sort by: Category</option>
+              </select>
               <button
                 onClick={handleAddListing}
                 className="bg-[#ffb362] hover:bg-[#ffa347] transition-colors px-6 py-3 rounded-lg flex items-center gap-2 text-white font-['Alumni_Sans:Regular',_sans-serif] text-[20px]"
@@ -137,7 +166,7 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile }: Dashboar
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredListings.map((listing) => (
+              {sortedListings.map((listing) => (
                 <div key={listing.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
                   <img
                     src={listing.image}

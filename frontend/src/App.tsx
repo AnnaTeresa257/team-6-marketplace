@@ -19,7 +19,8 @@ export default function App() {
     setCurrentPage('dashboard');
   };
 
-  const handleRegister = () => {
+  const handleRegister = (email: string) => {
+    setLoggedInUser(email);
     setCurrentPage('dashboard');
   };
 
