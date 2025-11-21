@@ -63,7 +63,6 @@ export function ProfilePage({ userEmail, onNavigateToDashboard, onLogout }: Prof
   // Mock data for user stats
   const myListings = 2;
   const totalSales = 0;
-  const totalEarnings = 0;
   const memberSince = 'September 2024';
 
   return (
@@ -207,12 +206,6 @@ export function ProfilePage({ userEmail, onNavigateToDashboard, onLogout }: Prof
                     <span className="font-['Alumni_Sans:Regular',_sans-serif] text-[18px]">Total Sales</span>
                   </div>
                   <p className="font-['Impact:Regular',_sans-serif] text-[36px]">{totalSales}</p>
-                </div>
-              </div>
-              <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-                <div className="flex items-center justify-between">
-                  <span className="font-['Alumni_Sans:Regular',_sans-serif] text-[20px] text-gray-700">Total Earnings</span>
-                  <span className="font-['Impact:Regular',_sans-serif] text-[32px] text-[#00306e]">${totalEarnings}</span>
                 </div>
               </div>
             </div>
