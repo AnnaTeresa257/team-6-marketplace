@@ -91,9 +91,8 @@ export function LoginPage({
       <div className={styles.left}>
         <div className={styles.card}>
           <div className={styles.logoCircle}>
-            {/* Replace src with your actual logo path */}
             <img
-              src="/assets/gator-logo-circle.png"
+              src="/gatormarketplace_white.png"
               alt="Gator Marketplace"
               className={styles.logoImage}
             />

@@ -171,7 +171,7 @@ export function RegisterPage({
         <div className={styles.logoCard}>
           <div className={styles.logoWrapper}>
             <img
-              src="/assets/gator-marketplace-logo.png"
+              src="/gatormarketplace_dark.png"
               alt="Gator Marketplace"
               className={styles.logoImage}
               onError={(e) => {

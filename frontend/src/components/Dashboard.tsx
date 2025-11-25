@@ -83,10 +83,11 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile }: Dashboar
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.logo}>
-            <div className={styles.logoIcon}>
-              <ShoppingCart className="size-8 text-[#00306e]" />
-            </div>
-            <h1 className={styles.logoText}>GATOR<br/>MARKETPLACE</h1>
+            <img
+              src="/gatormarketplace_white.png"
+              alt="Gator Marketplace"
+              className={styles.logoImage}
+            />
           </div>
           <nav className={styles.nav}>
             <button
