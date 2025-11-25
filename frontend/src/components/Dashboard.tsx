@@ -7,6 +7,7 @@ interface DashboardProps {
   userEmail: string;
   onLogout: () => void;
   onNavigateToProfile: () => void;
+  onNavigateToListingDetail?: (listing: Listing) => void;
 }
 
 interface Listing {
@@ -20,7 +21,7 @@ interface Listing {
 
 type Category = 'all' | 'school' | 'apparel' | 'living' | 'services' | 'tickets';
 
-export function Dashboard({ userEmail, onLogout, onNavigateToProfile }: DashboardProps) {
+export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigateToListingDetail }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'browse' | 'myListings' | 'profile'>('browse');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high' | 'category'>('name');
@@ -236,7 +237,7 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile }: Dashboar
                       <span className={styles.listingPrice}>${listing.price}</span>
                     </div>
                     <button
-                      onClick={() => handleContactSeller(listing.seller)}
+                      onClick={() => onNavigateToListingDetail ? onNavigateToListingDetail(listing) : handleContactSeller(listing.seller)}
                       className={styles.seeListingButton}
                     >
                       See Listing
