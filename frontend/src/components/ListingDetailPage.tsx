@@ -10,6 +10,7 @@ interface ListingDetailPageProps {
     seller: string;
     category: string;
     image: string;
+    description?: string;
   };
   onNavigateBack: () => void;
 }
@@ -98,7 +99,7 @@ export function ListingDetailPage({ listing, onNavigateBack }: ListingDetailPage
             
             <div className={styles.descriptionSection}>
               <p className={styles.descriptionText}>
-                ~~~~~~~ Item description ~~~~~~~
+                {listing.description || 'No description provided'}
               </p>
             </div>
 

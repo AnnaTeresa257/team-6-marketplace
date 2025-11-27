@@ -18,6 +18,7 @@ interface Listing {
   seller: string;
   category: string;
   image: string;
+  description?: string;
 }
 
 type Category = 'all' | 'school' | 'apparel' | 'living' | 'services' | 'tickets';
@@ -28,6 +29,7 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
   const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high' | 'category'>('name');
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingListing, setEditingListing] = useState<Listing | null>(null);
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [nextId, setNextId] = useState(13);
 
@@ -40,18 +42,18 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
       setNextId(parsed.nextId);
     } else {
       const initialListings = [
-        { id: 1, title: 'Calculus Textbook', price: 45, seller: 'student1@ufl.edu', category: 'school', image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400' },
-        { id: 2, title: 'Mini Fridge', price: 80, seller: 'student2@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400' },
-        { id: 3, title: 'Desk Lamp', price: 15, seller: 'student3@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400' },
-        { id: 4, title: 'UF T-Shirt', price: 20, seller: 'student4@ufl.edu', category: 'apparel', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400' },
-        { id: 5, title: 'Gators Hoodie', price: 35, seller: 'student5@ufl.edu', category: 'apparel', image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400' },
-        { id: 6, title: 'Graphing Calculator', price: 60, seller: 'student6@ufl.edu', category: 'school', image: 'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=400' },
-        { id: 7, title: 'Biology Textbook', price: 40, seller: userEmail, category: 'school', image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400' },
-        { id: 8, title: 'Office Chair', price: 50, seller: userEmail, category: 'living', image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400' },
-        { id: 9, title: 'Tutoring - Calculus', price: 25, seller: 'student7@ufl.edu', category: 'services', image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400' },
-        { id: 10, title: 'Football Game Tickets', price: 50, seller: 'student8@ufl.edu', category: 'tickets', image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=400' },
-        { id: 11, title: 'Study Desk', price: 65, seller: 'student9@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400' },
-        { id: 12, title: 'Basketball Game Tickets', price: 30, seller: 'student10@ufl.edu', category: 'tickets', image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400' },
+        { id: 1, title: 'Calculus Textbook', price: 45, seller: 'student1@ufl.edu', category: 'school', image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400', description: 'Used calculus textbook in great condition' },
+        { id: 2, title: 'Mini Fridge', price: 80, seller: 'student2@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400', description: 'Compact mini fridge, perfect for dorm rooms' },
+        { id: 3, title: 'Desk Lamp', price: 15, seller: 'student3@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400', description: 'Adjustable desk lamp with LED bulb' },
+        { id: 4, title: 'UF T-Shirt', price: 20, seller: 'student4@ufl.edu', category: 'apparel', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400', description: 'Official UF t-shirt, size medium' },
+        { id: 5, title: 'Gators Hoodie', price: 35, seller: 'student5@ufl.edu', category: 'apparel', image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400', description: 'Warm Gators hoodie, size large' },
+        { id: 6, title: 'Graphing Calculator', price: 60, seller: 'student6@ufl.edu', category: 'school', image: 'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=400', description: 'TI-84 graphing calculator, barely used' },
+        { id: 7, title: 'Biology Textbook', price: 40, seller: userEmail, category: 'school', image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400', description: 'Biology textbook for intro course' },
+        { id: 8, title: 'Office Chair', price: 50, seller: userEmail, category: 'living', image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400', description: 'Comfortable office chair with wheels' },
+        { id: 9, title: 'Tutoring - Calculus', price: 25, seller: 'student7@ufl.edu', category: 'services', image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400', description: 'One-on-one calculus tutoring sessions' },
+        { id: 10, title: 'Football Game Tickets', price: 50, seller: 'student8@ufl.edu', category: 'tickets', image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=400', description: 'Two tickets to next home game' },
+        { id: 11, title: 'Study Desk', price: 65, seller: 'student9@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400', description: 'Sturdy study desk with drawer' },
+        { id: 12, title: 'Basketball Game Tickets', price: 30, seller: 'student10@ufl.edu', category: 'tickets', image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400', description: 'Tickets for this Saturday\'s game' },
       ];
       setAllListings(initialListings);
     }
@@ -93,6 +95,12 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
   const sortedListings = sortListings(filteredListings);
 
   const handleAddListing = () => {
+    setEditingListing(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditListing = (listing: Listing) => {
+    setEditingListing(listing);
     setIsModalOpen(true);
   };
 
@@ -110,12 +118,28 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
       seller: userEmail,
       category: listingData.category,
       image: listingData.image,
+      description: listingData.description,
     };
 
     setAllListings([...allListings, newListing]);
     setNextId(nextId + 1);
     setActiveTab('myListings'); // Switch to My Listings tab
     toast.success('Listing created successfully!');
+  };
+
+  const handleUpdateListing = (id: number, listingData: {
+    title: string;
+    price: number;
+    category: string;
+    description: string;
+    image: string;
+  }) => {
+    setAllListings(allListings.map(listing => 
+      listing.id === id 
+        ? { ...listing, ...listingData }
+        : listing
+    ));
+    toast.success('Listing updated successfully!');
   };
 
   const handleContactSeller = (seller: string) => {
@@ -339,7 +363,7 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
                     </div>
                     <div className={styles.buttonGroup}>
                       <button
-                        onClick={() => toast.info('Edit feature would open a form')}
+                        onClick={() => handleEditListing(listing)}
                         className={styles.editButton}
                       >
                         Edit
@@ -402,8 +426,13 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
       {/* Create Listing Modal */}
       <CreateListingModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingListing(null);
+        }}
         onCreateListing={handleCreateListing}
+        onUpdateListing={handleUpdateListing}
+        editingListing={editingListing}
         userEmail={userEmail}
       />
     </div>

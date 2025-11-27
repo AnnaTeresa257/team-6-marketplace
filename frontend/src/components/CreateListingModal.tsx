@@ -13,11 +13,26 @@ interface CreateListingModalProps {
     image: string;
   }) => void;
   userEmail: string;
+  editingListing?: {
+    id: number;
+    title: string;
+    price: number;
+    category: string;
+    description?: string;
+    image: string;
+  } | null;
+  onUpdateListing?: (id: number, listing: {
+    title: string;
+    price: number;
+    category: string;
+    description: string;
+    image: string;
+  }) => void;
 }
 
 type Category = 'school' | 'apparel' | 'living' | 'services' | 'tickets';
 
-export function CreateListingModal({ isOpen, onClose, onCreateListing, userEmail }: CreateListingModalProps) {
+export function CreateListingModal({ isOpen, onClose, onCreateListing, userEmail, editingListing, onUpdateListing }: CreateListingModalProps) {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState<Category>('school');
@@ -25,6 +40,26 @@ export function CreateListingModal({ isOpen, onClose, onCreateListing, userEmail
   const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
+
+  // Populate form when editing
+  useState(() => {
+    if (editingListing) {
+      setTitle(editingListing.title);
+      setPrice(editingListing.price.toString());
+      setCategory(editingListing.category as Category);
+      setDescription(editingListing.description || '');
+      setImagePreview(editingListing.image);
+      setImageUrl('');
+    } else {
+      setTitle('');
+      setPrice('');
+      setCategory('school');
+      setDescription('');
+      setImageUrl('');
+      setImageFile(null);
+      setImagePreview('');
+    }
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -59,13 +94,19 @@ export function CreateListingModal({ isOpen, onClose, onCreateListing, userEmail
       return;
     }
 
-    onCreateListing({
+    const listingData = {
       title,
       price: priceNum,
       category,
       description,
       image: imagePreview || imageUrl || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
-    });
+    };
+
+    if (editingListing && onUpdateListing) {
+      onUpdateListing(editingListing.id, listingData);
+    } else {
+      onCreateListing(listingData);
+    }
 
     // Reset form
     setTitle('');
@@ -84,7 +125,7 @@ export function CreateListingModal({ isOpen, onClose, onCreateListing, userEmail
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Create New Listing</h2>
+          <h2 className={styles.title}>{editingListing ? 'Edit Listing' : 'Create New Listing'}</h2>
           <button onClick={onClose} className={styles.closeButton}>
             <X className="size-6" />
           </button>
@@ -202,7 +243,7 @@ export function CreateListingModal({ isOpen, onClose, onCreateListing, userEmail
               Cancel
             </button>
             <button type="submit" className={styles.submitButton}>
-              Create Listing
+              {editingListing ? 'Update Listing' : 'Create Listing'}
             </button>
           </div>
         </form>
