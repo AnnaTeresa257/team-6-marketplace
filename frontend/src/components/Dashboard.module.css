@@ -25,7 +25,7 @@
 }
 
 .logoImage {
-  height: 60px;
+  height: 75px;
   width: auto;
   object-fit: contain;
 }
@@ -83,6 +83,9 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+  border-radius: 100px;
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 25px;
 }
 
 .logoutButton:hover {
@@ -103,7 +106,7 @@
   font-family: 'Impact', sans-serif;
   font-size: 48px;
   text-align: center;
-  color: black;
+  color: #11002A;
   margin-bottom: 2rem;
 }
 
@@ -148,26 +151,28 @@
 .categoryLabel {
   font-family: 'Impact', sans-serif;
   font-size: 18px;
-  color: black;
+  color: #11002A;
 }
 
 .actionBar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 .showAllButton {
   background: #00306e;
   color: white;
   border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px;
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 18px;
+  font-size: 25px;
   cursor: pointer;
   transition: background-color 0.2s;
+  flex-shrink: 0; /* prevents shrinking */
 }
 
 .showAllButton:hover {
@@ -176,12 +181,14 @@
 
 .actionButtons {
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
+  flex-grow: 1; /* allows this section to stretch */
 }
 
 .searchContainer {
   position: relative;
+  flex-grow: 1; /* search bar fills available space */
 }
 
 .searchIcon {
@@ -192,18 +199,21 @@
   width: 20px;
   height: 20px;
   color: #9ca3af;
+  pointer-events: none;
 }
 
 .searchInput {
-  padding-left: 2.5rem;
+  width: 100%;
+  padding-left: 2.5rem; /* space for icon */
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   border: 2px solid #d1d5db;
-  border-radius: 4px;
+  border-radius: 100px;
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 18px;
+  font-size: 25px;
   outline: none;
+  box-sizing: border-box;
 }
 
 .searchInput:focus {
@@ -213,12 +223,13 @@
 .sortSelect {
   padding: 0.5rem 1rem;
   border: 2px solid #d1d5db;
-  border-radius: 4px;
+  border-radius: 100px;
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 18px;
+  font-size: 25px;
   background: white;
   cursor: pointer;
   outline: none;
+  flex-shrink: 0; /* prevents shrinking */
 }
 
 .sortSelect:focus {
@@ -229,15 +240,16 @@
   background: #ffb362;
   color: white;
   border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 18px;
+  font-size: 25px;
   cursor: pointer;
   transition: background-color 0.2s;
+  flex-shrink: 0; /* prevents shrinking */
 }
 
 .newListingButton:hover {
@@ -264,7 +276,7 @@
 
 .listingCard {
   background: white;
-  border: 2px solid black;
+  border: 2px solid #00306E;
   overflow: hidden;
   transition: box-shadow 0.2s;
 }
@@ -296,7 +308,7 @@
 
 .listingContent {
   padding: 1.5rem;
-  border-top: 2px solid black;
+  border-top: 2px solid #30306E;
 }
 
 .listingHeader {
@@ -313,14 +325,14 @@
 .listingTitle {
   font-family: 'Impact', sans-serif;
   font-size: 24px;
-  color: black;
+  color: #11002A;
   margin: 0 0 0.25rem 0;
 }
 
 .listingCategory {
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 18px;
-  color: #4b5563;
+  font-size: 25px;
+  color: #11002A;
   text-transform: capitalize;
   margin: 0;
 }
@@ -328,20 +340,21 @@
 .listingPrice {
   font-family: 'Impact', sans-serif;
   font-size: 28px;
-  color: #00306e;
+  color: #11002a;
   margin: 0;
 }
 
 .seeListingButton {
   width: 100%;
   background: white;
-  color: black;
-  border: 2px solid black;
+  color: #00306e;
+  border: 2px solid #00306e;
   padding: 0.75rem;
   font-family: 'Impact', sans-serif;
-  font-size: 18px;
+  font-size: 25px;
   cursor: pointer;
   transition: background-color 0.2s;
+  border-radius: 100px;
 }
 
 .seeListingButton:hover {
@@ -351,7 +364,7 @@
 .pageTitle {
   font-family: 'Impact', sans-serif;
   font-size: 48px;
-  color: black;
+  color: #11002A;
   margin-bottom: 1.5rem;
 }
 
@@ -467,12 +480,14 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.2s;
-  border: 2px solid black;
+  border: 2px solid #11002A;
+  border-radius: 100px;
 }
 
 .editButton {
   background: white;
-  color: black;
+  color: #00306e;
+  border-radius: 100px;
 }
 
 .editButton:hover {
@@ -480,12 +495,13 @@
 }
 
 .deleteButton {
-  background: #dc2626;
+  background: #FFB362;
   color: white;
+  border-radius: 100px;
 }
 
 .deleteButton:hover {
-  background: #b91c1c;
+  background: #FFB362;
 }
 
 .soldButton {
@@ -498,6 +514,7 @@
   border: 2px solid #00306e;
   background: #00306e;
   color: white;
+  border-radius: 100px;
 }
 
 .soldButton[disabled] {

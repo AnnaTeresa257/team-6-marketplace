@@ -145,10 +145,7 @@
   transition: all 0.2s;
 }
 
-.labelButton:hover {
-  background-color: #ffb362;
-  color: white;
-}
+
 
 .soldButton {
   flex: 1;

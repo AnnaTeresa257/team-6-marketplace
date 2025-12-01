@@ -3,6 +3,10 @@
   background: white;
 }
 
+body {
+  font-family: 'Alumni Sans', sans-serif;
+}
+
 .header {
   background: #00306e;
   color: white;
@@ -100,7 +104,7 @@
 
 .profileName {
   font-family: 'Impact', sans-serif;
-  font-size: 28px;
+  font-size: 30px;
   color: #00306e;
   margin: 0 0 0.5rem 0;
   text-align: center;
@@ -111,7 +115,7 @@
   padding: 0.5rem 0.75rem;
   border: 2px solid #00306e;
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 22px;
+  font-size: 25px;
   text-align: center;
   margin-bottom: 0.5rem;
   outline: none;
@@ -131,13 +135,13 @@
 
 .profileEmailText {
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 18px;
+  font-size: 25px;
   margin: 0;
 }
 
 .memberSince {
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 16px;
+  font-size: 18px;
   color: #6b7280;
   margin: 0;
 }
@@ -176,13 +180,15 @@
 .phoneText,
 .bioText {
   font-family: 'Alumni Sans', sans-serif;
-  font-size: 18px;
+  font-size: 20px;
   color: black;
   margin: 0 0 0.5rem 0;
+  text-align: center;
 }
 
 .bioText {
-  font-size: 16px;
+  font-size: 20px;
+  font-family: 'Alumni Sans', sans-serif;
   color: #4b5563;
   margin-bottom: 1rem;
   word-wrap: break-word;
@@ -196,7 +202,7 @@
   width: 100%;
   background: #ffb362;
   color: white;
-  border: 2px solid black;
+  border: 2px solid #00306e;
   padding: 0.75rem;
   font-family: 'Impact', sans-serif;
   font-size: 18px;
@@ -206,10 +212,13 @@
   justify-content: center;
   gap: 0.5rem;
   transition: background-color 0.2s;
+   border-radius: 100px;
 }
 
 .editButton:hover {
-  background: #ffa347;
+  background: white;
+  color: #ffb362;
+  border: 2px solid #ffb362;
 }
 
 .saveButton {
