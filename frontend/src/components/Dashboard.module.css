@@ -488,6 +488,33 @@
   background: #b91c1c;
 }
 
+.soldButton {
+  flex: 1;
+  padding: 0.5rem;
+  font-family: 'Impact', sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: 2px solid #00306e;
+  background: #00306e;
+  color: white;
+}
+
+.soldButton[disabled] {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.soldBadge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: #9ca3af;
+  color: white;
+  font-family: 'Impact', sans-serif;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
 .buttonGroup {
   display: flex;
   gap: 0.5rem;

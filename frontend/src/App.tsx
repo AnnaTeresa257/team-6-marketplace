@@ -14,6 +14,7 @@ interface Listing {
   seller: string;
   category: string;
   image: string;
+  isSold?: boolean;
 }
 
 //  MOCK MODE: Set to false when backend is running

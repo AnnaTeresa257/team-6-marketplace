@@ -1,5 +1,4 @@
 import { ArrowLeft, ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
 import styles from './ListingDetailPage.module.css';
 
 interface ListingDetailPageProps {
@@ -11,21 +10,19 @@ interface ListingDetailPageProps {
     category: string;
     image: string;
     description?: string;
+    isSold?: boolean;
   };
   onNavigateBack: () => void;
 }
 
 export function ListingDetailPage({ listing, onNavigateBack }: ListingDetailPageProps) {
-  const [isSold, setIsSold] = useState(false);
 
   const handleBuyNow = () => {
     // Handle purchase logic here
     alert(`Initiating purchase for ${listing.title}`);
   };
 
-  const handleMarkAsSold = () => {
-    setIsSold(true);
-  };
+  // The 'isSold' state is now driven by the listing prop passed from the parent Dashboard.
 
   return (
     <div className={styles.container}>
@@ -82,13 +79,9 @@ export function ListingDetailPage({ listing, onNavigateBack }: ListingDetailPage
               <button className={styles.labelButton}>
                 {listing.category.toUpperCase()}
               </button>
-              <button
-                onClick={handleMarkAsSold}
-                className={styles.soldButton}
-                disabled={isSold}
-              >
-                {isSold ? 'SOLD' : 'MARK AS SOLD'}
-              </button>
+              {listing.isSold ? (
+                <span className={styles.soldBadge}>SOLD</span>
+              ) : null}
             </div>
           </div>
 
@@ -106,8 +99,9 @@ export function ListingDetailPage({ listing, onNavigateBack }: ListingDetailPage
             <button
               onClick={handleBuyNow}
               className={styles.buyButton}
+              disabled={listing.isSold}
             >
-              BUY NOW
+              {listing.isSold ? 'SOLD' : 'BUY NOW'}
             </button>
           </div>
         </div>

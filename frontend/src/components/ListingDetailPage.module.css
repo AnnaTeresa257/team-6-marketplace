@@ -171,6 +171,15 @@
   cursor: not-allowed;
 }
 
+.soldBadge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #9ca3af;
+  color: white;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
 .detailsSection {
   background-color: white;
   border-radius: 0.5rem;
