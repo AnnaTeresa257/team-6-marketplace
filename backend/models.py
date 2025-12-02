@@ -19,6 +19,7 @@ class User(SQLModel, table=True):
     username: str = Field(index=True, unique=True)
     email: str = Field(index=True, unique=True)
     hashed_password: str
+    is_admin: bool = Field(default=False)
     items: List[Item] = Relationship(back_populates="seller")
 
 # --- Pydantic Schemas ---
@@ -53,6 +54,7 @@ class UserPublic(SQLModel):
     id: int
     username: str
     email: EmailStr
+    is_admin: bool = False
 
 class Token(SQLModel):
     # Structure of an authentication response for OAuth2 workflows.

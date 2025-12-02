@@ -42,5 +42,6 @@ def read_secure_data(current_user: User = Depends(get_current_user)):
     return {
         "message": f"Success! You are authenticated as {current_user.username}",
         "email": current_user.email,
-        "id": current_user.id
+        "id": current_user.id,
+        "is_admin": current_user.is_admin
     }
