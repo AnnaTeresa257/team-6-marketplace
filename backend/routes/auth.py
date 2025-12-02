@@ -49,7 +49,7 @@ def signup(user_data: UserCreate, session: Session = Depends(get_session)):
     # Validates and converts object into the UserPublic Pydantic model, effectively stripping hashed_password
     return new_user
 
-@auth_router.post("/login", response_model=Token)
+@auth_router.post("/login")
 def login(
         # Pre-built Pydantic model that tells FastAPI to look for data sent in the requested body as standard HTML form data (application/x-www-form-urlencoded)
         # Specifically looks for username and password fields and parses the data
@@ -73,4 +73,13 @@ def login(
         subject=user.username, expires_delta=access_token_expires
     )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    # Return token with user metadata (backward compatible)
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "email": user.email,
+            "username": user.username,
+            "is_admin": user.is_admin
+        }
+    }

@@ -1,0 +1,13 @@
+#!/bin/bash
+# Run database migrations
+# Note: This project uses SQLModel.create_all() for schema management
+# Run this if you need to initialize the database tables
+
+cd "$(dirname "$0")/.."
+
+python -c "
+from backend.database import initialize_db
+print('Initializing database tables...')
+initialize_db()
+print('✓ Database tables created successfully!')
+"
