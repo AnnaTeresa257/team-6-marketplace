@@ -1,5 +1,5 @@
-import { Package, ShoppingCart, User, LogOut, Plus, Search } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Package, ShoppingCart, User, LogOut, Plus, Search, Trash2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import styles from './Dashboard.module.css';
 import { CreateListingModal } from './CreateListingModal';
@@ -9,6 +9,9 @@ interface DashboardProps {
   onLogout: () => void;
   onNavigateToProfile: () => void;
   onNavigateToListingDetail?: (listing: Listing) => void;
+  apiUrl?: string;
+  mockMode?: boolean;
+  isAdmin?: boolean;
 }
 
 interface Listing {
@@ -16,15 +19,17 @@ interface Listing {
   title: string;
   price: number;
   seller: string;
+  seller_id?: number;
   category: string;
   image: string;
   description?: string;
   isSold?: boolean;
+  is_active?: boolean;
 }
 
 type Category = 'all' | 'school' | 'apparel' | 'living' | 'services' | 'tickets';
 
-export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigateToListingDetail }: DashboardProps) {
+export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigateToListingDetail, apiUrl = 'http://localhost:8000', mockMode = true, isAdmin = false }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'browse' | 'myListings' | 'profile'>('browse');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high' | 'category'>('name');
@@ -34,38 +39,89 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [nextId, setNextId] = useState(13);
 
-  // Initialize with mock data on first load
-  useEffect(() => {
-    const savedListings = localStorage.getItem('marketplace_listings');
-    if (savedListings) {
-      const parsed = JSON.parse(savedListings);
-      setAllListings(parsed.listings);
-      setNextId(parsed.nextId);
-    } else {
-      const initialListings = [
-        { id: 1, title: 'Calculus Textbook', price: 45, seller: 'student1@ufl.edu', category: 'school', image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400', description: 'Used calculus textbook in great condition', isSold: false },
-        { id: 2, title: 'Mini Fridge', price: 80, seller: 'student2@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400', description: 'Compact mini fridge, perfect for dorm rooms', isSold: false },
-        { id: 3, title: 'Desk Lamp', price: 15, seller: 'student3@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400', description: 'Adjustable desk lamp with LED bulb', isSold: false },
-        { id: 4, title: 'UF T-Shirt', price: 20, seller: 'student4@ufl.edu', category: 'apparel', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400', description: 'Official UF t-shirt, size medium', isSold: false },
-        { id: 5, title: 'Gators Hoodie', price: 35, seller: 'student5@ufl.edu', category: 'apparel', image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400', description: 'Warm Gators hoodie, size large', isSold: false },
-        { id: 6, title: 'Graphing Calculator', price: 60, seller: 'student6@ufl.edu', category: 'school', image: 'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=400', description: 'TI-84 graphing calculator, barely used', isSold: false },
-        { id: 7, title: 'Biology Textbook', price: 40, seller: userEmail, category: 'school', image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400', description: 'Biology textbook for intro course', isSold: false },
-        { id: 8, title: 'Office Chair', price: 50, seller: userEmail, category: 'living', image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400', description: 'Comfortable office chair with wheels', isSold: false },
-        { id: 9, title: 'Tutoring - Calculus', price: 25, seller: 'student7@ufl.edu', category: 'services', image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400', description: 'One-on-one calculus tutoring sessions', isSold: false },
-        { id: 10, title: 'Football Game Tickets', price: 50, seller: 'student8@ufl.edu', category: 'tickets', image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=400', description: 'Two tickets to next home game', isSold: false },
-        { id: 11, title: 'Study Desk', price: 65, seller: 'student9@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400', description: 'Sturdy study desk with drawer', isSold: false },
-        { id: 12, title: 'Basketball Game Tickets', price: 30, seller: 'student10@ufl.edu', category: 'tickets', image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400', description: 'Tickets for this Saturday\'s game', isSold: false },
-      ];
-      setAllListings(initialListings);
-    }
-  }, [userEmail]);
+  // Helper function to transform backend item to frontend listing format
+  const transformItemToListing = useCallback((item: {
+    id: number;
+    title: string;
+    price: number;
+    seller_id: number;
+    category: string;
+    description?: string;
+    image?: string;
+    is_active: boolean;
+    seller?: { email: string };
+  }): Listing => ({
+    id: item.id,
+    title: item.title,
+    price: item.price,
+    seller: item.seller?.email || userEmail,
+    seller_id: item.seller_id,
+    category: item.category,
+    image: item.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
+    description: item.description,
+    isSold: !item.is_active,
+    is_active: item.is_active,
+  }), [userEmail]);
 
-  // Save to localStorage whenever listings change
+  // Fetch listings from API or use mock data
+  const fetchListings = useCallback(async () => {
+    if (mockMode) {
+      // Use mock data in mock mode
+      const savedListings = localStorage.getItem('marketplace_listings');
+      if (savedListings) {
+        const parsed = JSON.parse(savedListings);
+        setAllListings(parsed.listings);
+        setNextId(parsed.nextId);
+      } else {
+        const initialListings = [
+          { id: 1, title: 'Calculus Textbook', price: 45, seller: 'student1@ufl.edu', category: 'school', image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400', description: 'Used calculus textbook in great condition', isSold: false },
+          { id: 2, title: 'Mini Fridge', price: 80, seller: 'student2@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400', description: 'Compact mini fridge, perfect for dorm rooms', isSold: false },
+          { id: 3, title: 'Desk Lamp', price: 15, seller: 'student3@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400', description: 'Adjustable desk lamp with LED bulb', isSold: false },
+          { id: 4, title: 'UF T-Shirt', price: 20, seller: 'student4@ufl.edu', category: 'apparel', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400', description: 'Official UF t-shirt, size medium', isSold: false },
+          { id: 5, title: 'Gators Hoodie', price: 35, seller: 'student5@ufl.edu', category: 'apparel', image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400', description: 'Warm Gators hoodie, size large', isSold: false },
+          { id: 6, title: 'Graphing Calculator', price: 60, seller: 'student6@ufl.edu', category: 'school', image: 'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=400', description: 'TI-84 graphing calculator, barely used', isSold: false },
+          { id: 7, title: 'Biology Textbook', price: 40, seller: userEmail, category: 'school', image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400', description: 'Biology textbook for intro course', isSold: false },
+          { id: 8, title: 'Office Chair', price: 50, seller: userEmail, category: 'living', image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400', description: 'Comfortable office chair with wheels', isSold: false },
+          { id: 9, title: 'Tutoring - Calculus', price: 25, seller: 'student7@ufl.edu', category: 'services', image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400', description: 'One-on-one calculus tutoring sessions', isSold: false },
+          { id: 10, title: 'Football Game Tickets', price: 50, seller: 'student8@ufl.edu', category: 'tickets', image: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=400', description: 'Two tickets to next home game', isSold: false },
+          { id: 11, title: 'Study Desk', price: 65, seller: 'student9@ufl.edu', category: 'living', image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400', description: 'Sturdy study desk with drawer', isSold: false },
+          { id: 12, title: 'Basketball Game Tickets', price: 30, seller: 'student10@ufl.edu', category: 'tickets', image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400', description: 'Tickets for this Saturday\'s game', isSold: false },
+        ];
+        setAllListings(initialListings);
+      }
+      return;
+    }
+
+    // Fetch from API
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${apiUrl}/items/active`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+      });
+      if (response.ok) {
+        const items = await response.json();
+        const listings = items.map(transformItemToListing);
+        setAllListings(listings);
+      } else {
+        toast.error('Failed to fetch listings');
+      }
+    } catch (error) {
+      toast.error('Error connecting to server');
+      console.error('Error fetching listings:', error);
+    }
+  }, [mockMode, apiUrl, userEmail, transformItemToListing]);
+
+  // Initialize listings on first load
   useEffect(() => {
-    if (allListings.length > 0) {
+    fetchListings();
+  }, [fetchListings]);
+
+  // Save to localStorage whenever listings change (only in mock mode)
+  useEffect(() => {
+    if (mockMode && allListings.length > 0) {
       localStorage.setItem('marketplace_listings', JSON.stringify({ listings: allListings, nextId }));
     }
-  }, [allListings, nextId]);
+  }, [allListings, nextId, mockMode]);
 
   const mockListings = allListings.filter(listing => listing.seller !== userEmail);
   const myListings = allListings.filter(listing => listing.seller === userEmail);
@@ -105,28 +161,64 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
     setIsModalOpen(true);
   };
 
-  const handleCreateListing = (listingData: {
+  const handleCreateListing = async (listingData: {
     title: string;
     price: number;
     category: string;
     description: string;
     image: string;
   }) => {
-    const newListing: Listing = {
-      id: nextId,
-      title: listingData.title,
-      price: listingData.price,
-      seller: userEmail,
-      category: listingData.category,
-      image: listingData.image,
-      description: listingData.description,
-      isSold: false,
-    };
+    if (mockMode) {
+      // Mock mode: add locally
+      const newListing: Listing = {
+        id: nextId,
+        title: listingData.title,
+        price: listingData.price,
+        seller: userEmail,
+        category: listingData.category,
+        image: listingData.image,
+        description: listingData.description,
+        isSold: false,
+      };
+      setAllListings([...allListings, newListing]);
+      setNextId(nextId + 1);
+      setActiveTab('myListings');
+      toast.success('Listing created successfully!');
+      return;
+    }
 
-    setAllListings([...allListings, newListing]);
-    setNextId(nextId + 1);
-    setActiveTab('myListings'); // Switch to My Listings tab
-    toast.success('Listing created successfully!');
+    // API mode: create via backend
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${apiUrl}/items`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          title: listingData.title,
+          price: listingData.price,
+          category: listingData.category,
+          description: listingData.description,
+          image: listingData.image,
+          is_active: true,
+        }),
+      });
+      if (response.ok) {
+        const newItem = await response.json();
+        const newListing = transformItemToListing(newItem);
+        setAllListings([...allListings, newListing]);
+        setActiveTab('myListings');
+        toast.success('Listing created successfully!');
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Failed to create listing');
+      }
+    } catch (error) {
+      toast.error('Error connecting to server');
+      console.error('Error creating listing:', error);
+    }
   };
 
   const handleUpdateListing = (id: number, listingData: {
@@ -148,15 +240,96 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
     toast.success(`Contact initiated with ${seller}`);
   };
 
-  const markListingAsSold = (id: number) => {
-    setAllListings(allListings.map(listing => listing.id === id ? { ...listing, isSold: true } : listing));
-    toast.success('Listing marked as SOLD');
+  const markListingAsSold = async (id: number) => {
+    if (mockMode) {
+      // Mock mode: update locally
+      setAllListings(allListings.map(listing => listing.id === id ? { ...listing, isSold: true } : listing));
+      toast.success('Listing marked as SOLD');
+      return;
+    }
+
+    // API mode: mark as sold via backend
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${apiUrl}/items/${id}/mark-sold`, {
+        method: 'PUT',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+      });
+      if (response.ok) {
+        setAllListings(allListings.map(listing => listing.id === id ? { ...listing, isSold: true } : listing));
+        toast.success('Listing marked as SOLD');
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Failed to mark as sold');
+      }
+    } catch (error) {
+      toast.error('Error connecting to server');
+      console.error('Error marking as sold:', error);
+    }
   };
 
-  const handleDeleteListing = (listingId: number, listingTitle: string) => {
-    if (window.confirm(`Are you sure you want to delete "${listingTitle}"?`)) {
+  const handleDeleteListing = async (listingId: number, listingTitle: string) => {
+    if (!window.confirm(`Are you sure you want to delete "${listingTitle}"?`)) {
+      return;
+    }
+
+    if (mockMode) {
+      // Mock mode: delete locally
       setAllListings(allListings.filter(listing => listing.id !== listingId));
       toast.success('Listing deleted successfully!');
+      return;
+    }
+
+    // API mode: delete via backend
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${apiUrl}/items/${listingId}`, {
+        method: 'DELETE',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+      });
+      if (response.ok) {
+        setAllListings(allListings.filter(listing => listing.id !== listingId));
+        toast.success('Listing deleted successfully!');
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Failed to delete listing');
+      }
+    } catch (error) {
+      toast.error('Error connecting to server');
+      console.error('Error deleting listing:', error);
+    }
+  };
+
+  // Admin delete handler for deleting any listing
+  const handleAdminDeleteListing = async (listingId: number, listingTitle: string) => {
+    if (!window.confirm(`Admin: Are you sure you want to delete "${listingTitle}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    if (mockMode) {
+      // Mock mode: delete locally
+      setAllListings(allListings.filter(listing => listing.id !== listingId));
+      toast.success('Listing deleted by admin!');
+      return;
+    }
+
+    // API mode: delete via backend
+    try {
+      const token = localStorage.getItem('access_token');
+      const response = await fetch(`${apiUrl}/items/${listingId}`, {
+        method: 'DELETE',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+      });
+      if (response.ok) {
+        setAllListings(allListings.filter(listing => listing.id !== listingId));
+        toast.success('Listing deleted by admin!');
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Failed to delete listing');
+      }
+    } catch (error) {
+      toast.error('Error connecting to server');
+      console.error('Error deleting listing:', error);
     }
   };
 
@@ -317,7 +490,17 @@ export function Dashboard({ userEmail, onLogout, onNavigateToProfile, onNavigate
 
             {/* Listings Grid */}
             <div className={styles.listingsGrid}>{sortedListings.map((listing) => (
-                <div key={listing.id} className={styles.listingCard}>
+                <div key={listing.id} className={styles.listingCard} style={{ position: 'relative' }}>
+                  {/* Admin Delete Button */}
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleAdminDeleteListing(listing.id, listing.title)}
+                      className={styles.adminDeleteButton}
+                      title="Admin: Delete listing"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  )}
                   <div className={styles.listingImage}>
                     <img
                       src={listing.image}

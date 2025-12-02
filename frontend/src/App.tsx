@@ -20,24 +20,38 @@ interface Listing {
 //  MOCK MODE: Set to false when backend is running
 const MOCK_MODE = true;
 
+// Admin emails for mock mode (in production this would come from the backend)
+const MOCK_ADMIN_EMAILS = ['admin@ufl.edu'];
+
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('login');
   const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const apiUrl = 'http://localhost:8000';
 
-  const handleLogin = (email: string) => {
+  const handleLogin = (email: string, adminStatus?: boolean) => {
     setLoggedInUser(email);
+    // In mock mode, check if the email is in the admin list
+    // In API mode, adminStatus would come from the backend
+    if (MOCK_MODE) {
+      setIsAdmin(MOCK_ADMIN_EMAILS.includes(email));
+    } else {
+      setIsAdmin(adminStatus || false);
+    }
     setCurrentPage('dashboard');
   };
 
   const handleRegister = (email: string) => {
     setLoggedInUser(email);
+    // New registrations are not admins
+    setIsAdmin(false);
     setCurrentPage('dashboard');
   };
 
   const handleLogout = () => {
     setLoggedInUser(null);
+    setIsAdmin(false);
     setCurrentPage('login');
   };
 
@@ -86,6 +100,9 @@ export default function App() {
           onLogout={handleLogout}
           onNavigateToProfile={navigateToProfile}
           onNavigateToListingDetail={navigateToListingDetail}
+          apiUrl={apiUrl}
+          mockMode={MOCK_MODE}
+          isAdmin={isAdmin}
         />
       )}
       {currentPage === 'profile' && loggedInUser && (
