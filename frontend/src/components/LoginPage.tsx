@@ -68,10 +68,11 @@ export function LoginPage({
 
         // 3. Get token and save it to localStorage
         const data = await response.json();
-        localStorage.setItem('gator_token', data.access_token);
+        localStorage.setItem('access_token', data.access_token);
 
         toast.success('Login successful!');
-        onLogin(email); // Tell App.tsx to change the page
+        // Pass is_admin status if available
+        onLogin(email, data.user?.is_admin); // Tell App.tsx to change the page
       }
     } catch (error) {
       toast.error(

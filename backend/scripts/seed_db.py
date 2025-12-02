@@ -281,6 +281,12 @@ def main():
     print("=" * 60)
     print()
     
+    # Initialize database tables if they don't exist
+    from backend.database import initialize_db
+    print("🔧 Initializing database tables...")
+    initialize_db()
+    print("✓ Database tables ready\n")
+    
     with Session(engine) as session:
         # Create users
         print("👤 Creating/Verifying Seed Users...")
