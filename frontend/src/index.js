@@ -4,6 +4,8 @@ import './index.css';
 import App from './App'; // This will correctly import App.tsx
 import reportWebVitals from './reportWebVitals';
 import { Toaster } from 'sonner'; // <-- Import Toaster
+import "@fontsource/alumni-sans"; 
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

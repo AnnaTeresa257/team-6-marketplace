@@ -1,0 +1,391 @@
+.container {
+  min-height: 100vh;
+  background: white;
+}
+
+body {
+  font-family: 'Alumni Sans', sans-serif;
+}
+
+.header {
+  background: #00306e;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.headerContent {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 20px;
+  transition: opacity 0.2s;
+}
+
+.backButton:hover {
+  opacity: 0.8;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logoIcon {
+  width: 48px;
+  height: 48px;
+  background: #ffb362;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoText {
+  font-family: 'Impact', sans-serif;
+  font-size: 32px;
+}
+
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.profileCard {
+  background: white;
+  border: 2px solid black;
+  padding: 1.5rem;
+}
+
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.profileIcon {
+  width: 128px;
+  height: 128px;
+  background: #00306e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.profileName {
+  font-family: 'Impact', sans-serif;
+  font-size: 30px;
+  color: #00306e;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+.nameInput {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #00306e;
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 25px;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  outline: none;
+}
+
+.nameInput:focus {
+  border-color: #ffb362;
+}
+
+.profileEmail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b5563;
+  margin-bottom: 0.25rem;
+}
+
+.profileEmailText {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 25px;
+  margin: 0;
+}
+
+.memberSince {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 18px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.editSection {
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 18px;
+  color: black;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #d1d5db;
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 18px;
+  outline: none;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #00306e;
+}
+
+.textarea {
+  resize: none;
+}
+
+.phoneText,
+.bioText {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 20px;
+  color: black;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+.bioText {
+  font-size: 20px;
+  font-family: 'Alumni Sans', sans-serif;
+  color: #4b5563;
+  margin-bottom: 1rem;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  max-width: 34ch;
+  word-break: normal;
+}
+
+.editButton {
+  width: 100%;
+  background: #ffb362;
+  color: white;
+  border: 2px solid #00306e;
+  padding: 0.75rem;
+  font-family: 'Impact', sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+   border-radius: 100px;
+}
+
+.editButton:hover {
+  background: white;
+  color: #ffb362;
+  border: 2px solid #ffb362;
+}
+
+.saveButton {
+  width: 100%;
+  background: #00306e;
+  color: white;
+  border: 2px solid black;
+  padding: 0.75rem;
+  font-family: 'Impact', sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 0.5rem;
+}
+
+.saveButton:hover {
+  background: #004080;
+}
+
+.cancelButton {
+  width: 100%;
+  background: #e5e7eb;
+  color: black;
+  border: 2px solid black;
+  padding: 0.75rem;
+  font-family: 'Impact', sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover {
+  background: #d1d5db;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.statsCard {
+  background: white;
+  border: 2px solid black;
+  padding: 1.5rem;
+}
+
+.sectionTitle {
+  font-family: 'Impact', sans-serif;
+  font-size: 28px;
+  color: #00306e;
+  margin: 0 0 1rem 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.statBox {
+  background: linear-gradient(to bottom right, #00306e, #004080);
+  padding: 1rem;
+  color: white;
+  border: 2px solid black;
+}
+
+.statBox.orange {
+  background: linear-gradient(to bottom right, #ffb362, #ffa347);
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.statLabel {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 18px;
+}
+
+.statValue {
+  font-family: 'Impact', sans-serif;
+  font-size: 36px;
+  margin: 0;
+}
+
+.settingsCard {
+  background: white;
+  border: 2px solid black;
+  padding: 1.5rem;
+}
+
+.settingsButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settingButton {
+  width: 100%;
+  background: white;
+  color: #00306e;
+  border: 2px solid #00306e;
+  padding: 0.75rem 1rem;
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background-color 0.2s;
+}
+
+.settingButton:hover {
+  background: #f9fafb;
+}
+
+.dangerCard {
+  background: white;
+  border: 2px solid #dc2626;
+  padding: 1.5rem;
+}
+
+.dangerTitle {
+  font-family: 'Impact', sans-serif;
+  font-size: 28px;
+  color: #dc2626;
+  margin: 0 0 1rem 0;
+}
+
+.dangerButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.logoutButton {
+  width: 100%;
+  background: #e5e7eb;
+  color: black;
+  border: 2px solid black;
+  padding: 0.75rem;
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logoutButton:hover {
+  background: #d1d5db;
+}
+
+.deleteButton {
+  width: 100%;
+  background: #dc2626;
+  color: white;
+  border: 2px solid black;
+  padding: 0.75rem;
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deleteButton:hover {
+  background: #b91c1c;
+}

@@ -1,6 +1,7 @@
 import { User, Mail, Package, ShoppingCart, ArrowLeft, Edit2, Lock, Bell, Shield } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import styles from './ProfilePage.module.css';
 
 interface ProfilePageProps {
   userEmail: string;
@@ -19,6 +20,11 @@ export function ProfilePage({ userEmail, onNavigateToDashboard, onLogout }: Prof
   const [name, setName] = useState('Student Name');
   const [phone, setPhone] = useState('');
   const [bio, setBio] = useState('');
+  
+  // Temporary edit values
+  const [editName, setEditName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editBio, setEditBio] = useState('');
 
   // Load saved profile data on mount
   useEffect(() => {
@@ -31,17 +37,35 @@ export function ProfilePage({ userEmail, onNavigateToDashboard, onLogout }: Prof
     }
   }, [userEmail]);
 
+  const handleEditClick = () => {
+    // Copy current values to edit fields
+    setEditName(name);
+    setEditPhone(phone);
+    setEditBio(bio);
+    setIsEditing(true);
+  };
+
   const handleSaveProfile = () => {
+    // Save edited values to actual state
+    setName(editName);
+    setPhone(editPhone);
+    setBio(editBio);
+    
     // Save to localStorage
     const profileData: ProfileData = {
-      name,
-      phone,
-      bio,
+      name: editName,
+      phone: editPhone,
+      bio: editBio,
     };
     localStorage.setItem(`profile_${userEmail}`, JSON.stringify(profileData));
     
     setIsEditing(false);
     toast.success('Profile updated successfully!');
+  };
+
+  const handleCancel = () => {
+    // Discard changes and close edit mode
+    setIsEditing(false);
   };
 
   const handleChangePassword = () => {
@@ -63,182 +87,136 @@ export function ProfilePage({ userEmail, onNavigateToDashboard, onLogout }: Prof
   // Mock data for user stats
   const myListings = 2;
   const totalSales = 0;
-  const totalEarnings = 0;
   const memberSince = 'September 2024';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={styles.container}>
       {/* Header */}
-      <header className="bg-[#00306e] text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={onNavigateToDashboard}
-                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-              >
-                <ArrowLeft className="size-6" />
-                <span className="font-['Alumni_Sans:Regular',_sans-serif] text-[20px]">Back to Dashboard</span>
-              </button>
+      <header className={styles.header}>
+        <div className={styles.headerContent}>
+          <button onClick={onNavigateToDashboard} className={styles.backButton}>
+            <ArrowLeft className="size-6" />
+            <span>Back to Dashboard</span>
+          </button>
+          <div className={styles.logo}>
+            <div className={styles.logoIcon}>
+              <ShoppingCart className="size-6" />
             </div>
-            <div className="flex items-center gap-3">
-              <div className="size-12 bg-[#ffb362] rounded-full flex items-center justify-center">
-                <ShoppingCart className="size-6" />
-              </div>
-              <h1 className="font-['Impact:Regular',_sans-serif] text-[32px]">GATOR MARKET</h1>
-            </div>
+            <h1 className={styles.logoText}>GATOR MARKET</h1>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <main className={styles.main}>
+        <div className={styles.grid}>
           {/* Left Column - Profile Card */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex flex-col items-center mb-6">
-                <div className="size-32 bg-[#00306e] rounded-full flex items-center justify-center mb-4">
+          <div>
+            <div className={styles.profileCard}>
+              <div className={styles.profileHeader}>
+                <div className={styles.profileIcon}>
                   <User className="size-16 text-white" />
                 </div>
                 {isEditing ? (
                   <input
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-2 border-2 border-[#00306e] rounded-lg font-['Alumni_Sans:Regular',_sans-serif] text-[22px] text-center mb-2"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className={styles.nameInput}
                     placeholder="Your Name"
                   />
                 ) : (
-                  <h2 className="font-['Impact:Regular',_sans-serif] text-[28px] text-[#00306e] mb-2">{name}</h2>
+                  <h2 className={styles.profileName}>{name}</h2>
                 )}
-                <div className="flex items-center gap-2 text-gray-600 mb-1">
+                <div className={styles.profileEmail}>
                   <Mail className="size-4" />
-                  <p className="font-['Alumni_Sans:Regular',_sans-serif] text-[18px]">{userEmail}</p>
+                  <p className={styles.profileEmailText}>{userEmail}</p>
                 </div>
-                <p className="font-['Alumni_Sans:Regular',_sans-serif] text-[16px] text-gray-500">Member since {memberSince}</p>
+                <p className={styles.memberSince}>Member since {memberSince}</p>
               </div>
 
               {isEditing ? (
-                <div className="space-y-3 mb-4">
-                  <div>
-                    <label className="font-['Alumni_Sans:Regular',_sans-serif] text-[18px] text-gray-700 mb-1 block">
-                      Phone Number
-                    </label>
+                <div>
+                  <div className={styles.editSection}>
+                    <label className={styles.label}>Phone Number</label>
                     <input
                       type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg font-['Alumni_Sans:Regular',_sans-serif] text-[18px]"
+                      value={editPhone}
+                      onChange={(e) => setEditPhone(e.target.value)}
+                      className={styles.input}
                       placeholder="(123) 456-7890"
                     />
                   </div>
-                  <div>
-                    <label className="font-['Alumni_Sans:Regular',_sans-serif] text-[18px] text-gray-700 mb-1 block">
-                      Bio
-                    </label>
+                  <div className={styles.editSection}>
+                    <label className={styles.label}>Bio (max 100 characters)</label>
                     <textarea
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg font-['Alumni_Sans:Regular',_sans-serif] text-[18px] resize-none"
+                      value={editBio}
+                      onChange={(e) => setEditBio(e.target.value)}
+                      className={styles.textarea}
                       rows={3}
+                      maxLength={100}
                       placeholder="Tell other students about yourself..."
                     />
+                    <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '0.25rem' }}>
+                      {editBio.length}/100 characters
+                    </p>
                   </div>
-                </div>
-              ) : (
-                <>
-                  {phone && (
-                    <p className="font-['Alumni_Sans:Regular',_sans-serif] text-[18px] text-gray-700 mb-2">
-                      Phone: {phone}
-                    </p>
-                  )}
-                  {bio && (
-                    <p className="font-['Alumni_Sans:Regular',_sans-serif] text-[16px] text-gray-600 mb-4">
-                      {bio}
-                    </p>
-                  )}
-                </>
-              )}
-
-              {isEditing ? (
-                <div className="space-y-2">
-                  <button
-                    onClick={handleSaveProfile}
-                    className="w-full bg-[#00306e] hover:bg-[#004080] transition-colors text-white py-2 rounded-lg font-['Alumni_Sans:Regular',_sans-serif] text-[18px]"
-                  >
+                  <button onClick={handleSaveProfile} className={styles.saveButton}>
                     Save Changes
                   </button>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="w-full bg-gray-200 hover:bg-gray-300 transition-colors text-gray-800 py-2 rounded-lg font-['Alumni_Sans:Regular',_sans-serif] text-[18px]"
-                  >
+                  <button onClick={handleCancel} className={styles.cancelButton}>
                     Cancel
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="w-full bg-[#ffb362] hover:bg-[#ffa347] transition-colors text-white py-2 rounded-lg flex items-center justify-center gap-2 font-['Alumni_Sans:Regular',_sans-serif] text-[18px]"
-                >
-                  <Edit2 className="size-4" />
-                  Edit Profile
-                </button>
+                <>
+                  {phone && <p className={styles.phoneText}>Phone: {phone}</p>}
+                  {bio && <p className={styles.bioText}>{bio}</p>}
+                  <button onClick={handleEditClick} className={styles.editButton}>
+                    <Edit2 className="size-4" />
+                    Edit Profile
+                  </button>
+                </>
               )}
             </div>
           </div>
 
           {/* Right Column - Statistics and Settings */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className={styles.rightColumn}>
             {/* Account Statistics */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="font-['Impact:Regular',_sans-serif] text-[28px] text-[#00306e] mb-4">Account Statistics</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gradient-to-br from-[#00306e] to-[#004080] p-4 rounded-lg text-white">
-                  <div className="flex items-center gap-3 mb-2">
+            <div className={styles.statsCard}>
+              <h3 className={styles.sectionTitle}>Account Statistics</h3>
+              <div className={styles.statsGrid}>
+                <div className={styles.statBox}>
+                  <div className={styles.statHeader}>
                     <Package className="size-6" />
-                    <span className="font-['Alumni_Sans:Regular',_sans-serif] text-[18px]">Active Listings</span>
+                    <span className={styles.statLabel}>Active Listings</span>
                   </div>
-                  <p className="font-['Impact:Regular',_sans-serif] text-[36px]">{myListings}</p>
+                  <p className={styles.statValue}>{myListings}</p>
                 </div>
-                <div className="bg-gradient-to-br from-[#ffb362] to-[#ffa347] p-4 rounded-lg text-white">
-                  <div className="flex items-center gap-3 mb-2">
+                <div className={`${styles.statBox} ${styles.orange}`}>
+                  <div className={styles.statHeader}>
                     <ShoppingCart className="size-6" />
-                    <span className="font-['Alumni_Sans:Regular',_sans-serif] text-[18px]">Total Sales</span>
+                    <span className={styles.statLabel}>Total Sales</span>
                   </div>
-                  <p className="font-['Impact:Regular',_sans-serif] text-[36px]">{totalSales}</p>
-                </div>
-              </div>
-              <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-                <div className="flex items-center justify-between">
-                  <span className="font-['Alumni_Sans:Regular',_sans-serif] text-[20px] text-gray-700">Total Earnings</span>
-                  <span className="font-['Impact:Regular',_sans-serif] text-[32px] text-[#00306e]">${totalEarnings}</span>
+                  <p className={styles.statValue}>{totalSales}</p>
                 </div>
               </div>
             </div>
 
             {/* Account Settings */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="font-['Impact:Regular',_sans-serif] text-[28px] text-[#00306e] mb-4">Account Settings</h3>
-              <div className="space-y-3">
-                <button
-                  onClick={handleChangePassword}
-                  className="w-full bg-white border-2 border-[#00306e] hover:bg-gray-50 transition-colors text-[#00306e] py-3 rounded-lg flex items-center gap-3 px-4 font-['Alumni_Sans:Regular',_sans-serif] text-[20px]"
-                >
+            <div className={styles.settingsCard}>
+              <h3 className={styles.sectionTitle}>Account Settings</h3>
+              <div className={styles.settingsButtons}>
+                <button onClick={handleChangePassword} className={styles.settingButton}>
                   <Lock className="size-5" />
                   Change Password
                 </button>
-                <button
-                  onClick={handleNotificationSettings}
-                  className="w-full bg-white border-2 border-[#00306e] hover:bg-gray-50 transition-colors text-[#00306e] py-3 rounded-lg flex items-center gap-3 px-4 font-['Alumni_Sans:Regular',_sans-serif] text-[20px]"
-                >
+                <button onClick={handleNotificationSettings} className={styles.settingButton}>
                   <Bell className="size-5" />
                   Notification Preferences
                 </button>
-                <button
-                  onClick={handlePrivacySettings}
-                  className="w-full bg-white border-2 border-[#00306e] hover:bg-gray-50 transition-colors text-[#00306e] py-3 rounded-lg flex items-center gap-3 px-4 font-['Alumni_Sans:Regular',_sans-serif] text-[20px]"
-                >
+                <button onClick={handlePrivacySettings} className={styles.settingButton}>
                   <Shield className="size-5" />
                   Privacy Settings
                 </button>
@@ -246,19 +224,13 @@ export function ProfilePage({ userEmail, onNavigateToDashboard, onLogout }: Prof
             </div>
 
             {/* Danger Zone */}
-            <div className="bg-white rounded-lg shadow-md p-6 border-2 border-red-200">
-              <h3 className="font-['Impact:Regular',_sans-serif] text-[28px] text-red-600 mb-4">Danger Zone</h3>
-              <div className="space-y-3">
-                <button
-                  onClick={onLogout}
-                  className="w-full bg-gray-200 hover:bg-gray-300 transition-colors text-gray-800 py-3 rounded-lg font-['Alumni_Sans:Regular',_sans-serif] text-[20px]"
-                >
+            <div className={styles.dangerCard}>
+              <h3 className={styles.dangerTitle}>Danger Zone</h3>
+              <div className={styles.dangerButtons}>
+                <button onClick={onLogout} className={styles.logoutButton}>
                   Log Out
                 </button>
-                <button
-                  onClick={handleDeleteAccount}
-                  className="w-full bg-red-600 hover:bg-red-700 transition-colors text-white py-3 rounded-lg font-['Alumni_Sans:Regular',_sans-serif] text-[20px]"
-                >
+                <button onClick={handleDeleteAccount} className={styles.deleteButton}>
                   Delete Account
                 </button>
               </div>

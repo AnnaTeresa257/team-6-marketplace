@@ -1,0 +1,203 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  background: white;
+}
+
+.left {
+  flex: 1;
+  background: #00306e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 500px;
+  padding: 2rem;
+}
+
+.logoCircle {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: #ffb362;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoImage {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.welcomeTitle {
+  font-family: 'Impact', sans-serif;
+  font-size: 50px;
+  color: black;
+  background: white;
+  padding: 1.5rem 2rem;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+  white-space: pre-line;
+}
+
+.tagline {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 45px;
+  color: black;
+  background: white;
+  padding: 0.5rem 2rem;
+  margin: 0;
+}
+
+.right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.form {
+  width: 100%;
+  max-width: 618px;
+}
+
+.helloWrap {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.hello {
+  font-family: 'Impact', sans-serif;
+  font-size: 50px;
+  color: #11002A;
+  margin: 0 0 1rem;
+}
+
+.helloSub {
+  font-family: 'Impact', sans-serif;
+  font-size: 20px;
+  color: #11002A;
+  margin: 0;
+}
+
+.label {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 25px;
+  color: #11002A;
+  display: block;
+  margin-bottom: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.input {
+  width: 100%;
+  height: 84px;
+  border: 2px solid #00306e;
+  background: white;
+  padding: 0 1rem;
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 20px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #ffb362;
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submit {
+  width: 100%;
+  height: 84px;
+  background: #ffb362;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Impact', sans-serif;
+  font-size: 40px;
+  color: white;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: background-color 0.2s;
+}
+
+.submit:hover:not(:disabled) {
+  background: #ffa347;
+}
+
+.submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.signup {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.signup a {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 25px;
+  color: #11002A;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.signup a:hover {
+  opacity: 0.8;
+}
+
+.forgotPassword {
+  text-align: right;
+  margin-top: 0.5rem;
+}
+
+.forgotPassword button {
+  font-family: 'Alumni Sans', sans-serif;
+  font-size: 25px;
+  color: #00306e;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.forgotPassword button:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.forgotPassword button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left {
+    display: none;
+  }
+
+  .right {
+    min-height: 100vh;
+  }
+}
