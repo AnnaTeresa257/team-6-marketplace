@@ -1,5 +1,6 @@
 from sqlmodel import SQLModel, Session, create_engine
 from dotenv import load_dotenv
+from .models import User, Item
 import os
 
 load_dotenv()  # Gets our DATABASE_URL without leaking private data
