@@ -29,11 +29,6 @@ def signup(user_data: UserCreate, session: Session = Depends(get_session)):
             detail="Username or email already registered"
         )
 
-    # --- ADD THIS DEBUG LINE ---
-    print(f"DEBUG: Attempting to hash: {user_data.password}")
-    print(f"DEBUG: Length is: {len(user_data.password.encode('utf-8'))} bytes")
-    # ---------------------------
-
     # User does not already exist, so hash their password and add the user's data into the database
     hashed_pwd = get_password_hash(user_data.password)
     new_user = User(

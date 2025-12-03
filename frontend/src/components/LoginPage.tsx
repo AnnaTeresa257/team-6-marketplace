@@ -4,7 +4,7 @@ import { mockApi } from '../mockApi';
 import styles from './Login.module.css';
 
 interface LoginPageProps {
-  onLogin: (email: string) => void;
+  onLogin: (email: string, isAdmin?: boolean) => void;
   onNavigateToRegister: () => void;
   apiUrl: string;
   mockMode?: boolean;

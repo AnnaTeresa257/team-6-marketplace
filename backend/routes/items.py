@@ -17,22 +17,10 @@ class ItemCreate(BaseModel):
     is_active: bool = True
 
 
-class ItemResponse(BaseModel):
-    id: int
-    title: str
-    price: float
-    seller_id: int
-    category: str
-    description: str | None
-    image: str | None
-    is_active: bool
-    seller: dict | None = None
-
-
 @items_router.get("/items/active")
 def get_active_items(session: Session = Depends(get_session)):
     """Get all active items with seller information"""
-    statement = select(Item).where(Item.is_active == True)
+    statement = select(Item).where(Item.is_active)
     items = session.exec(statement).all()
     
     # Include seller email in response
