@@ -53,6 +53,7 @@ This creates:
 - **100 items** (20 per category: school, apparel, living, services, tickets)
 
 Default seed users:
+
 | Email | Password | Role |
 |-------|----------|------|
 | admin1@ufl.edu | Passw0rd1! | Admin |
@@ -84,6 +85,7 @@ const MOCK_MODE = false;  // Set to false to use real backend
 
 3. **Start the frontend development server:**
 ```bash
+cd frontend/
 npm start
 ```
 

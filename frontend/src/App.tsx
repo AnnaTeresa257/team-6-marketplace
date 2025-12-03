@@ -18,7 +18,7 @@ interface Listing {
 }
 
 //  MOCK MODE: Set to false when backend is running
-const MOCK_MODE = true;
+const MOCK_MODE = false;
 
 // Admin emails for mock mode (in production this would come from the backend)
 const MOCK_ADMIN_EMAILS = ['admin@ufl.edu'];
