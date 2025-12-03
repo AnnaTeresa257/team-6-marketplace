@@ -2,10 +2,10 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from backend.database import initialize_db
-from backend.routes.auth import auth_router
-from backend.dependencies import get_current_user
-from backend.models import User
+from database import initialize_db
+from auth import auth_router
+from dependencies import get_current_user
+from models import User
 
 # Transforms a generator into an asynchronous context manager.
 # Handles the functionality of 'with', which allows setup code to run before the block and cleanup code to run after, even if an error occurred.

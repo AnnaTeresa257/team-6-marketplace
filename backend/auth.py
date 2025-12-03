@@ -3,9 +3,9 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select, or_
 from datetime import timedelta
 
-from backend.models import User, UserCreate, UserPublic, Token
-from backend.database import get_session
-from backend.security import (
+from models import User, UserCreate, UserPublic, Token
+from database import get_session
+from security import (
     verify_password,
     get_password_hash,
     create_access_token,
