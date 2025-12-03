@@ -88,7 +88,7 @@ export function RegisterPage({
 
         if (loginResponse.ok) {
           const loginData = await loginResponse.json();
-          localStorage.setItem('gator_token', loginData.access_token);
+          localStorage.setItem('access_token', loginData.access_token);
           toast.success('Account created successfully! Logging you in...');
           onRegister(email);
         } else {

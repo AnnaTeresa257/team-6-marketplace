@@ -1,0 +1,5 @@
+#!/bin/bash
+# Run backend tests
+
+cd "$(dirname "$0")/.."
+pytest backend/tests/ -v
