@@ -1,13 +1,26 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 from pydantic import EmailStr, field_validator
+from typing import List
 import re
 
 # --- Database Models ---
+class Item(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    title: str
+    description: str | None = None
+    seller_id: int = Field(foreign_key="user.id")
+    price: float
+    category: str
+    is_active: bool = Field(default=True)
+    image: str | None = None
+    seller: "User" = Relationship(back_populates="items")
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     username: str = Field(index=True, unique=True)
     email: str = Field(index=True, unique=True)
     hashed_password: str
+    is_admin: bool = Field(default=False)
+    items: List[Item] = Relationship(back_populates="seller")
 
 # --- Pydantic Schemas ---
 class UserCreate(SQLModel):
@@ -41,6 +54,7 @@ class UserPublic(SQLModel):
     id: int
     username: str
     email: EmailStr
+    is_admin: bool = False
 
 class Token(SQLModel):
     # Structure of an authentication response for OAuth2 workflows.
