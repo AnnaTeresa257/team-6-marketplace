@@ -1,0 +1,5 @@
+#!/bin/bash
+# Run the database seed script
+
+cd "$(dirname "$0")/.."
+python -m backend.scripts.seed_db
